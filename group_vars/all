@@ -1,0 +1,14 @@
+# Prefer k3s over kubeadm
+use_k3s : true
+
+# User variables
+dev_user: my-user
+create_user: true
+dev_password: root
+
+# Proxy settings
+proxy_parameters:
+  use_proxy: false
+  https_proxy: ""
+  http_proxy: ""
+  no_proxy: ""

@@ -1,0 +1,51 @@
+- name: Add proxy parameter to ~/.profile
+  blockinfile:
+    path: "{{ item }}/.profile"
+    block: |
+      export https_proxy={{ proxy_parameters.https_proxy }}
+      export HTTPS_PROXY=${https_proxy}
+      export http_proxy={{ proxy_parameters.http_proxy }}
+      export HTTP_PROXY=${http_proxy}
+      export no_proxy="{{ proxy_parameters.no_proxy }}"
+    insertafter: EOF
+    state: present
+    marker: "# {mark} PROXY CONFIG"
+  loop:
+    - "/home/{{ dev_user }}"
+    - "/root"
+  tags: ['proxy-settings']
+
+# Not needed when run with run_ansible.sh
+- name: Add proxy parameter to /etc/apt/apt.conf
+  copy:
+    dest: "/etc/apt/apt.conf"
+    content: |
+      Acquire::http::Proxy "{{ proxy_parameters.http_proxy }}";
+      Acquire::https::Proxy "{{ proxy_parameters.https_proxy }}";
+  tags: ['proxy-settings']
+
+- name: Add proxy parameter to ~/.gitconfig
+  copy:
+    dest: "{{ item }}/.gitconfig"
+    content: |
+      [url "https://"]
+      insteadOf = git://
+      [credential]
+      helper = store
+      [https]
+      proxy = {{ proxy_parameters.https_proxy }}
+      [http]
+      proxy = {{ proxy_parameters.http_proxy }}
+  loop:
+    - "/home/{{ dev_user }}" 
+    - "/root" 
+  tags: ['proxy-settings']
+
+- name: Add proxy parameter to /etc/pip.conf
+  copy:
+    dest: "/etc/pip.conf"
+    content: |
+      [global]
+      proxy = {{ proxy_parameters.http_proxy }}
+      https_proxy = {{ proxy_parameters.https_proxy }}
+  tags: ['proxy-settings']

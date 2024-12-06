@@ -1,0 +1,52 @@
+- name: Ensure .profile is sourced in .bashrc
+  lineinfile:
+    path: "{{ item }}/.bashrc"
+    line: "source ~/.profile"
+    insertafter: EOF
+    state: present
+  loop:
+    - "/home/{{ dev_user }}"
+    - "/root"
+  tags: ['profile']
+
+- name: Empty the file /root/.profile
+  copy:
+    dest: "{{ item }}/.profile"
+    content: ""
+  loop:
+    - "/home/{{ dev_user }}"
+    - "/root"
+  tags: ['profile']
+
+- name: Add ~/.local/bin to PATH in ~/.profile
+  lineinfile:
+    path: "/root/.profile"
+    line: 'export PATH="/home/{{ dev_user }}/.local/bin:$PATH"'
+    create: yes
+    state: present
+    insertafter: EOF
+  tags: ['profile']
+
+- name: Add JAVA_HOME in .profile 
+  blockinfile:
+    path: "/root/.profile"
+    block: |
+      export JAVA_HOME="/usr/lib/jvm/java-21-openjdk-amd64"
+      export PATH=$JAVA_HOME/bin:$PATH
+    insertafter: EOF
+    state: present
+    marker: "# {mark} JAVA CONFIG"
+  tags: ['profile']
+
+- name: Copy .profile to user home directory
+  copy:
+    src: "/root/.profile"
+    dest: "/home/{{ dev_user }}/"
+  tags: ['profile']
+
+- name: Change ownership of file .profile for my-user
+  file:
+    path: /home/{{ dev_user }}/.profile
+    owner: "{{ dev_user }}"
+    group: "{{ dev_user }}"
+  tags: ['profile']

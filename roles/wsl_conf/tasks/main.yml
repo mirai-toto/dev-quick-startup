@@ -1,0 +1,54 @@
+### Because of a bug in WSL, the binfmt_misc is not working properly ###
+- name: Check if /usr/lib/binfmt.d/WSLInterop.conf exists
+  stat:
+    path: /usr/lib/binfmt.d/WSLInterop.conf
+  register: WSLInterop_conf
+  tags: ['wsl']
+
+- name: Fix binfmt_misc
+  copy:
+    content: |
+      :WSLInterop:M::MZ::/init:PF
+    dest: /usr/lib/binfmt.d/WSLInterop.conf
+  when: not WSLInterop_conf.stat.exists
+  tags: ['wsl']
+
+### Creating a /etc/wsl.conf file to enable systemd ###
+
+- name: Check if /etc/wsl.conf exists
+  stat:
+    path: /etc/wsl.conf
+  register: wsl_conf
+  tags: ['wsl']
+
+- name: Create /etc/wsl.conf
+  copy:
+    content: |
+      [boot]
+      systemd=true
+      [automount]
+      options = "metadata"
+      [interop]
+      appendWindowsPath = true
+    dest: /etc/wsl.conf
+  when: not wsl_conf.stat.exists
+  tags: ['wsl']
+
+- name: Fail if /etc/wsl.conf was not created
+  fail:
+    msg: "The /etc/wsl.conf already exists, you need to restart the WSL distro with wsl.exe --shutdown"
+  when: not wsl_conf.stat.exists
+  tags: ['wsl']
+
+- name: Check if systemctl works
+  command: systemctl status
+  register: systemctl_output
+  failed_when: "'System has not been booted with systemd as init system' in systemctl_output.stderr or 'Failed to connect to bus' in systemctl_output.stderr"
+  tags: ['wsl']
+  ignore_errors: true
+
+- name: Stop playbook if systemctl is not enabled
+  fail:
+    msg: "Systemd is not enabled, try to restart the WSL distro with wsl.exe --shutdown"
+  when: systemctl_output.failed
+  tags: ['wsl']

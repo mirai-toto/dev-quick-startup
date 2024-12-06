@@ -1,0 +1,63 @@
+- name: Global Playbook
+  hosts: host
+  environment:
+    http_proxy: "{{ proxy_parameters.http_proxy }}"
+    https_proxy: "{{ proxy_parameters.https_proxy }}"
+    no_proxy: "{{ proxy_parameters.no_proxy }}"
+  tasks:
+    - name: Include user role
+      include_role:
+        name: user
+      when: create_user
+
+    - name: Include profile role
+      include_role:
+        name: profile
+
+    - name: Include proxy role
+      include_role:
+        name: proxy
+      when: proxy_parameters.use_proxy
+
+    - name: Include wsl_conf role
+      include_role:
+        name: wsl_conf
+
+    - name: Include dependencies role
+      include_role:
+        name: dependencies
+
+    - name: Include docker role
+      include_role:
+        name: docker
+
+    - block:
+        - name: Include k3s role
+          include_role:
+            name: k3s
+          when: use_k3s
+      rescue:
+        - name: Handle k3s role failure
+          debug:
+            msg: "The k3s role failed, This may be due to an another WSL instance with k3s running."
+        - name: Set k3s role failure flag
+          set_fact:
+            k3s_role_failed: true
+
+    - name: Include kubeadm role
+      include_role:
+        name: kubeadm
+      when: not use_k3s
+
+    - name: Include helm role
+      include_role:
+        name: helm
+
+    - name: Include k9s role
+      include_role:
+        name: k9s
+
+    - name: Include k3s-scripts role
+      include_role:
+        name: k3s-scripts
+      when: use_k3s and not k3s_role_failed | default(false)
