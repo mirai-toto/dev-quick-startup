@@ -19,6 +19,7 @@
       - python3-venv
       - python3-pip
       - openjdk-21-jdk
+      - npm
     state: latest
   tags: ['dependencies']
 
