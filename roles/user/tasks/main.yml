@@ -1,0 +1,22 @@
+- name: Check if user exists
+  command: "getent passwd {{ dev_user }}"
+  register: user_check
+  ignore_errors: true
+  changed_when: false
+
+- name: Create user
+  user:
+    name: "{{ dev_user }}"
+    state: present
+    password: "{{ dev_password | password_hash('sha512') }}"
+  when: user_check.rc != 0
+  tags: ['user']
+
+- name: Make user sudoer
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: '^{{ dev_user }}\s'
+    line: '{{ dev_user }} ALL=(ALL) NOPASSWD:ALL'
+  when: user_check.rc != 0
+  tags: ['user']
