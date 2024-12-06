@@ -1,0 +1,37 @@
+- name: Update and upgrade apt packages
+  no_log: true
+  apt:
+    upgrade: "yes"
+    update_cache: "yes"
+    cache_valid_time: 86400
+  tags: ['dependencies']
+
+- name: Install dependencies
+  no_log: true
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg2
+      - software-properties-common
+      - python3
+      - python3-venv
+      - python3-pip
+      - openjdk-21-jdk
+      - npm
+    state: latest
+  tags: ['dependencies']
+
+- name: Create a virtual environment
+  command: python3 -m venv /opt/venv
+  tags: ['dependencies']
+  
+- name: Set ownership of the virtual environment
+  file:
+    path: /opt/venv
+    state: directory
+    owner: "{{ dev_user }}"
+    group: "{{ dev_user }}"
+    recurse: yes
+  tags: ['dependencies']

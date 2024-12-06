@@ -1,0 +1,64 @@
+- name: Capture OS name
+  shell: "uname -s"
+  register: os_name
+  tags: ['docker']
+
+- name: Capture machine architecture
+  shell: "uname -m"
+  register: machine_arch
+  tags: ['docker']
+
+- name: Create directory for Docker keyring
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  tags: ['docker']
+
+- name: Download Kubernetes GPG key and dearmor
+  get_url:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    dest: /etc/apt/keyrings/docker.asc
+    mode: '0644'
+  tags: ['docker']
+
+- name: Add Docker repository
+  apt_repository:
+    repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable
+    state: present
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  tags: ['docker']
+
+- name: Install Docker
+  apt:
+    name: docker-ce
+    state: latest
+  tags: ['docker']
+
+- name: Check if Docker is installed
+  stat:
+    path: /usr/bin/docker
+  register: docker_installed
+  tags: ['docker']
+
+- name: Stop playbook if Docker is not installed
+  fail:
+    msg: "Docker is not installed"
+  when: not docker_installed.stat.exists
+  tags: ['docker']
+
+- name: Install Docker Compose plugin
+  ansible.builtin.apt:
+    name: docker-compose-plugin
+    state: present
+  tags: ['docker']
+
+- name: Add user to docker group
+  user:
+    name: "{{ dev_user }}"
+    groups: docker
+    append: yes
+  tags: ['docker']

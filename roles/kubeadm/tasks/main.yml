@@ -1,0 +1,40 @@
+- name: Create directory for Kubernetes keyring
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  tags: ['kubeadm']
+
+- name: Download Kubernetes GPG key and dearmor
+  get_url:
+    url: https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key
+    dest: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    mode: '0644'
+  tags: ['kubeadm']
+
+- name: Add Kubernetes APT repository
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /"
+    state: present
+    tags: ['kubeadm']
+
+- name: Install Kubernetes
+  apt:
+    name:
+      - kubeadm
+      - kubelet
+      - kubectl
+    state: present
+  tags: ['kubeadm']
+
+- name: Check if Kubernetes is installed
+  command: kubectl version --client
+  ignore_errors: true
+  register: kubectl_version
+  tags: ['kubeadm']
+
+- name: Stop playbook if Kubernetes is not installed
+  fail:
+    msg: "Kubernetes is not installed."
+  when: "'Client Version' not in kubectl_version.stdout"
+  tags: ['kubeadm']

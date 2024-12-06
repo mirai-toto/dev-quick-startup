@@ -1,0 +1,26 @@
+- name: Create .local/bin directory if it doesn't exist
+  file:
+    path: /home/{{ dev_user }}/.local/bin
+    state: directory
+    mode: '0755'
+    group: "{{ dev_user }}"
+    owner: "{{ dev_user }}"
+  tags: ['k3s-scripts']
+
+- name: Copy k3s-start.sh to user home directory
+  copy:
+    src: "/root/wsl-quick-startup/playbooks/files/k3s-start.sh"
+    dest: /home/{{ dev_user }}/.local/bin/k3s-start.sh
+    mode: '0755'
+    owner: "{{ dev_user }}"
+    group: "{{ dev_user }}"
+  tags: ['k3s-scripts']
+
+- name: Copy k3s-shutdown.sh to user home directory
+  copy:
+    src: "/root/wsl-quick-startup/playbooks/files/k3s-shutdown.sh"
+    dest: /home/{{ dev_user }}/.local/bin/k3s-shutdown.sh
+    mode: '0755'
+    owner: "{{ dev_user }}"
+    group: "{{ dev_user }}"
+  tags: ['k3s-scripts']
