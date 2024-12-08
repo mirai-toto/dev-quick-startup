@@ -53,10 +53,6 @@
       include_role:
         name: k9s
 
-    - name: Include zsh role
-      include_role:
-        name: zsh
-
     - name: Include profile role
       include_role:
         name: profile
