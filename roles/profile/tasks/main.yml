@@ -1,9 +1,3 @@
-- name: Clear .profile 
-  copy:
-    dest: "/root/.profile"
-    content: ""
-  tags: ['profile']
-
 - name: Ensure .profile is sourced in .bashrc
   lineinfile:
     path: "{{ item }}/.bashrc"
