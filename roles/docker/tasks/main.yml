@@ -32,9 +32,14 @@
     update_cache: yes
   tags: ['docker']
 
-- name: Install Docker
+- name: Install required Docker packages
   apt:
-    name: docker-ce
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-compose-plugin
+      - docker-compose
     state: latest
   tags: ['docker']
 
