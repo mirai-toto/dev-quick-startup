@@ -59,3 +59,9 @@
     owner: "{{ dev_user }}"
     group: "{{ dev_user }}"
   tags: ['profile']
+
+- name: Set default shell to bash for {{ dev_user }}
+  user:
+    name: "{{ dev_user }}"
+    shell: /bin/bash
+  tags: ['profile']
