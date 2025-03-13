@@ -56,8 +56,3 @@
     - name: Include k9s role
       include_role:
         name: k9s
-
-    - name: Include k3s-scripts role
-      include_role:
-        name: k3s-scripts
-      when: use_k3s and not k3s_role_failed | default(false)

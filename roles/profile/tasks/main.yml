@@ -27,6 +27,15 @@
     insertafter: EOF
   tags: ['profile']
 
+- name: Create .local/bin directory if it doesn't exist
+  file:
+    path: /home/{{ dev_user }}/.local/bin
+    state: directory
+    mode: '0755'
+    group: "{{ dev_user }}"
+    owner: "{{ dev_user }}"
+  tags: ['profile']
+
 - name: Add JAVA_HOME in .profile 
   blockinfile:
     path: "/root/.profile"

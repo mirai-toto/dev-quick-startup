@@ -34,22 +34,22 @@ To use Dev Quick Startup, follow these steps:
 
 Below are the variables you can configure in `group_vars/all`:
 
-| Name                | Description                                                  | Example         |
-|---------------------|--------------------------------------------------------------|-----------------|
-| `use_k3s`           | Determines whether to use k3s (lightweight Kubernetes) or kubeadm. | `true`          |
-| `dev_user`          | The username to create in the environment.                   | `my-user`       |
-| `create_user`       | Boolean value indicating whether to create a user.           | `true`          |
-| `dev_password`      | The password for the user created.                           | `root`          |
-| `proxy_parameters`  | Configuration for proxy usage.                               | See below       |
+| Name               | Description                                                        | Example   |
+| ------------------ | ------------------------------------------------------------------ | --------- |
+| `use_k3s`          | Determines whether to use k3s (lightweight Kubernetes) or kubeadm. | `true`    |
+| `dev_user`         | The username to create in the environment.                         | `my-user` |
+| `create_user`      | Boolean value indicating whether to create a user.                 | `true`    |
+| `dev_password`     | The password for the user created.                                 | `root`    |
+| `proxy_parameters` | Configuration for proxy usage.                                     | See below |
 
 ### Proxy Parameters
 
-| Name              | Description                    | Example                  |
-|-------------------|--------------------------------|--------------------------|
-| `use_proxy`       | Enable or disable proxy usage. | `false`                  |
-| `http_proxy`      | HTTP proxy URL.               | `http://proxy.example.com:8080` |
-| `https_proxy`     | HTTPS proxy URL.              | `https://proxy.example.com:8080` |
-| `no_proxy`        | Comma-separated list of hosts to bypass proxy. | `localhost,127.0.0.1` |
+| Name          | Description                    | Example                          |
+| ------------- | ------------------------------ | -------------------------------- |
+| `use_proxy`   | Enable or disable proxy usage. | `false`                          |
+| `http_proxy`  | HTTP proxy URL.                | `http://proxy.example.com:8080`  |
+| `https_proxy` | HTTPS proxy URL.               | `https://proxy.example.com:8080` |
+| `no_proxy`    | No proxy URLs                  | `localhost,127.0.0.1`            |
 
 ## Support
 
