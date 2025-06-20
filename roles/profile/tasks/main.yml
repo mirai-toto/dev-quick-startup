@@ -7,7 +7,7 @@
   loop:
     - "/home/{{ dev_user }}"
     - "/root"
-  tags: ['profile']
+  tags: ["profile"]
 
 - name: Empty the file /root/.profile
   copy:
@@ -16,7 +16,7 @@
   loop:
     - "/home/{{ dev_user }}"
     - "/root"
-  tags: ['profile']
+  tags: ["profile"]
 
 - name: Add ~/.local/bin to PATH in ~/.profile
   lineinfile:
@@ -25,18 +25,18 @@
     create: yes
     state: present
     insertafter: EOF
-  tags: ['profile']
+  tags: ["profile"]
 
 - name: Create .local/bin directory if it doesn't exist
   file:
     path: /home/{{ dev_user }}/.local/bin
     state: directory
-    mode: '0755'
+    mode: "0755"
     group: "{{ dev_user }}"
     owner: "{{ dev_user }}"
-  tags: ['profile']
+  tags: ["profile"]
 
-- name: Add JAVA_HOME in .profile 
+- name: Add JAVA_HOME in .profile
   blockinfile:
     path: "/root/.profile"
     block: |
@@ -45,23 +45,23 @@
     insertafter: EOF
     state: present
     marker: "# {mark} JAVA CONFIG"
-  tags: ['profile']
+  tags: ["profile"]
 
 - name: Copy .profile to user home directory
   copy:
     src: "/root/.profile"
     dest: "/home/{{ dev_user }}/"
-  tags: ['profile']
+  tags: ["profile"]
 
 - name: Change ownership of file .profile for my-user
   file:
     path: /home/{{ dev_user }}/.profile
     owner: "{{ dev_user }}"
     group: "{{ dev_user }}"
-  tags: ['profile']
+  tags: ["profile"]
 
 - name: Set default shell to bash for {{ dev_user }}
   user:
     name: "{{ dev_user }}"
     shell: /bin/bash
-  tags: ['profile']
+  tags: ["profile"]

@@ -10,13 +10,13 @@
     state: present
     password: "{{ dev_password | password_hash('sha512') }}"
   when: user_check.rc != 0
-  tags: ['user']
+  tags: ["user"]
 
 - name: Make user sudoer
   lineinfile:
     path: /etc/sudoers
     state: present
     regexp: '^{{ dev_user }}\s'
-    line: '{{ dev_user }} ALL=(ALL) NOPASSWD:ALL'
+    line: "{{ dev_user }} ALL=(ALL) NOPASSWD:ALL"
   when: user_check.rc != 0
-  tags: ['user']
+  tags: ["user"]

@@ -1,27 +1,28 @@
 - name: Download helm installer
-  get_url: 
+  get_url:
     url: https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
     dest: /tmp/get_helm.sh
     mode: 0755
-  tags: ['helm']
+  tags: ["helm"]
 
 - name: Execute the helm installer
   shell: /tmp/get_helm.sh
-  tags: ['helm']
+  tags: ["helm"]
 
 - name: Install helm version
   command: helm version
   ignore_errors: true
-  tags: ['helm']
+  tags: ["helm"]
 
 - name: Check if helm is installed
   command: helm
   ignore_errors: true
   register: helm_output
-  tags: ['helm']
+  tags: ["helm"]
 
 - name: Fail if helm is not installed
   fail:
     msg: "helm is not installed"
   when: helm_output.rc != 0
-  tags: ['helm']
+  tags: ["helm"]
+
